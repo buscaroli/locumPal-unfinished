@@ -58,8 +58,8 @@ router.get('/about', (req, res) => {
 router.get('/query', (req, res) => {
     
     res.render('query', {
-        town: req.town,
-        phone: req.phone
+        town: res.town,
+        phone: res.phone
     }) 
 })
 

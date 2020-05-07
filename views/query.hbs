@@ -13,34 +13,43 @@
     <form action="#" method="POST">
         <div>
             <label for="town">What town?</label>
-            <input name="town" id="town" value="" required>
+            <input name="town" id="town" value="" placeholder="Town" required>
         </div>
         <div>
-            <label for="phone">What phone number?</label>
-            <input name="phone" id="phone" value="" required>
+            <label for="postcode">What is the Postcode?</label>
+            <input name="postcode" id="postcode" value="" placeholder="Postcode" required>
         </div>
         <div>
             <button>Get Reply</button>
         </div>
     </form>
     <hr>
-    <p> The town you entered was {{ town }}.</p>
-    <p> The phone number you entered was {{ phone }}.</p>
+    <p id='text_place'></p>
+    
 
     {{>footer}}
 </body>
 </html>
 <script>
     const queryForm = document.querySelector('form')
-    const townSearch = document.getElementById('town')
-    const phoneSearch = document.getElementById('phone')
-
+    const place_sel = document.getElementById('text_place')
+    
 
     queryForm.addEventListener('submit', (e) => {
         e.preventDefault()
+        
+        const townSearch = document.getElementById('town')
+        const postcodeSearch = document.getElementById('postcode')
         const town = townSearch.value
-        const phone = phoneSearch.value
-        console.log(`The town is ${town} and the phone is ${phone}.`)
+        const postcode = postcodeSearch.value
+
+        if (!town || !postcode) {
+            place_sel.textContent = 'Please enter a town and a Postcode.'
+            return console.log('Please enter both a town and a Postcode.')
+        }
+        place_sel.textContent = `You selected the town of ${ town }, ${ postcode }.`
+        
+        return { town, postcode }
     })    
 </script>
 

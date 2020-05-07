@@ -17,6 +17,7 @@ header {
 
 footer {
     margin-top: 50px;
+    text-align: center;
 }
 
 form {
@@ -30,13 +31,25 @@ button {
     margin-top: 5px;
     background: green;
     color: snow;
+    border-radius: 5px;
 }
 
 button:hover{
     background: snow;
     color: green;
+    
 }
 
 input, label {
     display: block;
+    font-size: 1.1em;
+}
+
+input {
+    padding: 4px;
+    color: #444;
+}
+
+::placeholder {
+    opacity: 0.4;
 }
