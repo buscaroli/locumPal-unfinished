@@ -1,0 +1,19 @@
+{
+  "name": "locumpal",
+  "version": "1.0.0",
+  "description": "App that help to keep track of Locum Shifts.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js -e js,html,css,hbs,json,env"
+  },
+  "author": "Matteo",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "hbs": "^4.1.1"
+  }
+}

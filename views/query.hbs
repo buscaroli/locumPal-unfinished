@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- <script src='../js/query.js'></script> -->
+    <title>Query Page</title>
+</head>
+<body>
+    {{>header}}
+
+    <form action="#" method="POST">
+        <div>
+            <label for="town">What town?</label>
+            <input name="town" id="town" value="" required>
+        </div>
+        <div>
+            <label for="phone">What phone number?</label>
+            <input name="phone" id="phone" value="" required>
+        </div>
+        <div>
+            <button>Get Reply</button>
+        </div>
+    </form>
+    <hr>
+    <p> The town you entered was {{ town }}.</p>
+    <p> The phone number you entered was {{ phone }}.</p>
+
+    {{>footer}}
+</body>
+</html>
+<script>
+    const queryForm = document.querySelector('form')
+    const townSearch = document.getElementById('town')
+    const phoneSearch = document.getElementById('phone')
+
+
+    queryForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const town = townSearch.value
+        const phone = phoneSearch.value
+        console.log(`The town is ${town} and the phone is ${phone}.`)
+    })    
+</script>
+
