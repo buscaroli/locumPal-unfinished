@@ -3,6 +3,7 @@ const path = require('path')
 const userRouter = require('./routers/user')
 const hbs = require('hbs')
 
+
 const publicPath = path.join(__dirname, '../public')
 const partialPath = path.join(__dirname, '../views')
 
@@ -13,6 +14,7 @@ app.use(express.static(publicPath))
 app.use(userRouter)
 app.set('view engine', 'hbs')
 hbs.registerPartials(partialPath)
+
 
 
 // Starting the Server

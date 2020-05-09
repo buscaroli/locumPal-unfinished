@@ -11,7 +11,7 @@
     {{>header}}
     <h3>Currently NOT WORKING: Coordinates are hardcoded.</h3>
 
-    <form action="#" id="form_id" method="POST">
+    <form action="#" method="POST">
         <div>
             <label for="town">What town?</label>
             <input name="town" id="town" value="" placeholder="Town" required>
@@ -26,24 +26,38 @@
     </form>
     <hr>
     <div id="text_response"></div>
+    <div id='map'></div>
 
     {{>footer}}
 </body>
 </html>
 
 <script>
-    const queryForm = document.getElementById('form_id')
+    const queryForm = document.querySelector('form')
     const text_response_sel = document.getElementById('text_response')
     const townSearch = document.getElementById('town')
     const postcodeSearch = document.getElementById('postcode')
 
     queryForm.addEventListener('submit', (e) => {
         e.preventDefault()
+        
         const town = townSearch.value
         const postcode = postcodeSearch.value
 
-        text_response_sel.innerHTML = 'The Town is ' + town + ' and the Postcode is ' + postcode + '.'
+        text_response_sel.textContent = 'The Town is ' + town + ' and the Postcode is ' + postcode + '.'
         console.log('Form submitted with: ' + town + ' and ' + postcode + '.' )
     })    
 
 </script>
+<script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 44.49, lng: 11.34},
+          zoom: 10
+        });
+      }
+    </script>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"
+    async defer></script>

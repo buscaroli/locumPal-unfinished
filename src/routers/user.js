@@ -2,10 +2,8 @@ const express = require('express')
 const router = express()
 const bodyParser = require('body-parser');
 
-const middlewares = [
-  bodyParser.urlencoded({ extended: true }),
-];
-
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 let myDB = [
     {
@@ -47,6 +45,7 @@ router.get('/data', (req, res) => {
     res.send(myDB)
 })
 
+
 router.get('/about', (req, res) => {
     res.render('about', {
         name: author.name,
@@ -56,20 +55,21 @@ router.get('/about', (req, res) => {
 
 
 router.get('/query', (req, res) => {
-    
-    res.render('query', {
-        town: res.town,
-        phone: res.phone
-    }) 
+    res.render('query', {}) 
 })
 
 
 router.post('/query', (req, res) => {
-    res.render('query', {
-        town: req.town,
-        phone: req.phone
-    })
-    
+    town = req.body.town
+    postcode = req.body.postcode
+    //res.render('query-result', { town, postcode })
+    console.log(town) // not working ?!?
+    res.redirect('map', { town, postcode })   
+})
+
+
+router.get('/map', (req, res) => {
+    res.render('map', {town: req.town, postocode: req.postcode})
 })
 
 
