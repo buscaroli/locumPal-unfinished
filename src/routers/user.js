@@ -1,80 +1,117 @@
 const express = require('express')
 const router = express()
-const bodyParser = require('body-parser');
+const User = require('../models/user')
+const auth = require('../middleware/auth')
 
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
 
-let myDB = [
-    {
-        company: 'Firm One',
-        town:    'Poole',
-        postcode: 'BH34 2NN',
-        address:    '2000 Romanian Rd',
-        phone:      '01303123456',
-        PDA:        'Sal',   
-    },
-    {
-        company: 'Firm Two',
-        town:    'Sounthbourne',
-        postcode: 'BH43 9ZZ',
-        address:    '72 Draconian Way',
-        phone:      '01404654321',
-        PDA:        'Wendy',   
-    },
-    {
-        town: '',
-        phone: ''
+router.use(express.json())
+
+
+// Create User (Sign Up)
+router.post('/users', async (req, res) => {
+    const user = new User(req.body)
+    
+    try {
+        await user.save()
+        const token = await user.generateAuthToken()
+        res.status(201).send({ user, token })
+    } catch (e) {
+        res.status(400).send(e)
     }
-]
-
-const author = {
-    name: 'Matt',
-    company: 'Bright Firm Ltd'
-}
+})
 
 
-router.get('', (req, res) => {
-    res.render('index', {
-        town: myDB[0].town,
-        phone: myDB[0].phone
+// Login user
+router.post('/users/login', async (req, res) => {
+    try {
+        const user = await User.findByEmailAndPassword(req.body.email, req.body.password)
+        const token = await user.generateAuthToken()
+
+        res.send({ user, token })
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
+
+// Logout
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return (token.token !== req.token)
+        })
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+
+// Logout from All Devices
+router.post('/users/logoutall', auth, async (req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+
+// Read all users (exp. to be removed after introducing auth)
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
+})
+
+
+// Update one user by ID
+router.patch('/users/me', auth, async (req, res) => {
+    const user_id = req.user._id
+    const new_data = req.body
+
+    // Limiting the properties that can be updated to the ones in the array
+    const allowedUpdate = ['name', 'password', 'email', 'phone']
+    const updates = Object.keys(new_data)
+    const isValidOperation = updates.every((prop) => {
+        return allowedUpdate.includes(prop)
     })
-})
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Operation not allowed.' })
+    }
 
-router.get('/data', (req, res) => {
-    res.send(myDB)
-})
+    // Updating user if found
+    try {
+        // const user = await User.findById(user_id)
+        
+        // if (!user) {
+        //     return res.status(404).send()
+        // }
 
-
-router.get('/about', (req, res) => {
-    res.render('about', {
-        name: author.name,
-        company: author.company
-    })
-})
-
-
-router.get('/query', (req, res) => {
-    res.render('query', {}) 
-})
-
-
-router.post('/query', (req, res) => {
-    town = req.body.town
-    postcode = req.body.postcode
-    //res.render('query-result', { town, postcode })
-    console.log(town) // not working ?!?
-    res.redirect('map', { town, postcode })   
+        updates.forEach((prop) => {
+            req.user[prop] = req.body[prop]
+        })
+        
+        await req.user.save()
+        res.send(req.user)
+    } catch (e) {
+        res.status(500).send(e)
+    }
 })
 
 
-router.get('/map', (req, res) => {
-    res.render('map', {town: req.town, postocode: req.postcode})
-})
+// Delete one user
+router.delete('/users/me', auth, async (req, res) => {
+    const user_id = req.user._id
 
+    try {
+        await req.user.remove()
+        res.send(req.user)
 
-router.get('*', (req, res) => {
-    res.render('404', {})
+    } catch (e) {
+        res.status(500).send(e)
+    }
 })
 
 

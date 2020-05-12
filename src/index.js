@@ -1,19 +1,26 @@
 const express = require('express')
-const path = require('path')
+require('./db/mongoose')
 const userRouter = require('./routers/user')
-const hbs = require('hbs')
-
-
-const publicPath = path.join(__dirname, '../public')
-const partialPath = path.join(__dirname, '../views')
+const shiftRouter = require('./routers/shift')
+const path = require('path')
+// const hbs = require('hbs')
 
 const app = express()
 const port = process.env.PORT || 3000
 
-app.use(express.static(publicPath))
+// const publicPath = path.join(__dirname, '../public')
+// const partialPath = path.join(__dirname, '../views')
+
+
+// app.use(express.static(publicPath))
+
+
 app.use(userRouter)
-app.set('view engine', 'hbs')
-hbs.registerPartials(partialPath)
+app.use(shiftRouter)
+
+
+// app.set('view engine', 'hbs')
+// hbs.registerPartials(partialPath)
 
 
 
