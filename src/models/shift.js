@@ -4,15 +4,14 @@ const mongoose = require('mongoose')
 const shiftSchema = new mongoose.Schema({
     user_name: {
         type: String,
-        trim: true,
-        required: true
+        trim: true
     },
     store_name: {
         type: String,
         required: true
     },
     shift_date: {
-        type: String,
+        type: Date,
         required: true,
     },
     starting_time: {
@@ -53,7 +52,12 @@ const shiftSchema = new mongoose.Schema({
         default: false
     },
     date_paid: {
-        type: String
+        type: Date
+    },
+    locum: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 },
 {

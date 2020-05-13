@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Shift = require('./shift')
 
 
 const userSchema = new mongoose.Schema({
@@ -40,6 +41,17 @@ const userSchema = new mongoose.Schema({
 },
 {
     timestamps: true
+})
+
+
+// Creating a Virtual property in order to create a relationship between
+//      the User model and the Shift Model. Each shift has a reference to
+//      the User model, each User has a virtual property that links it to 
+//      its shifts.
+userSchema.virtual('shifts', {
+    ref: 'Shift',
+    localField: '_id',
+    foreignField: 'locum'
 })
 
 
@@ -96,6 +108,14 @@ userSchema.pre('save', async function(next) {
     if (this.isModified('password')){
         this.password = await bcrypt.hash(this.password, 8)
     }
+
+    next()
+})
+
+
+// Delete user's shifts if user deletes their account
+userSchema.pre('remove', async function(next) {
+    await Shift.deleteMany({ locum: this._id })
 
     next()
 })
